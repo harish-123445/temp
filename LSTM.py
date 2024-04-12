@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
 
 # Read the text file
-with open('sample.txt', 'r', encoding='utf-8') as file:
+with open('IndiaUS.txt', 'r', encoding='utf-8') as file:
     text = file.read()
    
 tokenizer = Tokenizer()
@@ -35,10 +35,10 @@ model.add(Dense(total_words, activation='softmax'))
 print(model.summary())
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(X, y, epochs=5, verbose=1)
+history=model.fit(X, y, epochs=30, verbose=1)
 
-seed_text = "I will leave if they"
-next_words = 3
+seed_text = "Joe Biden"
+next_words = 8
 
 for _ in range(next_words):
     token_list = tokenizer.texts_to_sequences([seed_text])[0]
@@ -52,3 +52,20 @@ for _ in range(next_words):
     seed_text += " " + output_word
 
 print(seed_text)
+
+import matplotlib.pyplot as plt
+plt.plot(history.history['loss'])
+plt.plot(history.history['accuracy'])
+plt.title('Model Training History')
+plt.ylabel('Accuracy/Loss')
+plt.xlabel('Epoch')
+plt.legend([ 'Loss','Accuracy'], loc='upper left')
+plt.show()
+
+# Example: Histogram of sequence lengths
+sequence_lengths = [len(seq) for seq in input_sequences]
+plt.hist(sequence_lengths, bins=30)
+plt.xlabel('Sequence Length')
+plt.ylabel('Frequency')
+plt.title('Distribution of Input Sequence Lengths')
+plt.show()
